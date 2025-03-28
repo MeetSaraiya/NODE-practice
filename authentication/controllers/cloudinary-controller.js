@@ -18,7 +18,7 @@ const uploadImageController = async (req, res) => {
     console.log("line 18-cloud-controller");
 
     if (url && publicId) {
-      const uploadedImage = await Image.create({
+       uploadedImage = await Image.create({
         url,
         publicId,
         uploadedBy: req.userInfo.userId,
