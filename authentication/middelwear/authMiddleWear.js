@@ -23,15 +23,20 @@ HasHomePageAccess = async (req, res, next) => {
 };
 
 AdminPageAccess = (req, res, next) => {
-  if (req.userInfo.userRole === "admin") {
-    console.log("-----------------Admin page----------------------------");
-    next();
-  } else {
-    console.log("user is not admin");
-    return res.status(404).json({
-      message: "User needs admin rights to access this page",
-      success: false,
-    });
+  try {
+    if (req.userInfo.userRole === "admin") {
+      console.log("-----------------Admin page----------------------------");
+      next();
+    } else {
+      console.log("user is not admin");
+      return res.status(404).json({
+        message: "User needs admin rights to access this page",
+        success: false,
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    console.log("admin error");
   }
 };
 
