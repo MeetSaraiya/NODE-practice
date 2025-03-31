@@ -97,4 +97,35 @@ const LoginUser = async (req, res) => {
     console.error(e);
   }
 };
-module.exports = { RegisterController, LoginUser };
+
+const changePasswordController = async (req, res) => {
+  try {
+    currentUserId = req.userInfo.userId;
+    const { oldPassword, newPassword } = req.body;
+    const user = await User.findById(currentUserId);
+    if (!user){
+      return res
+        .status(404)
+        .json({ success: false, message: `user not found` });
+    }
+    const result = bcrypt.compareSync(oldPassword, user.password);
+    if(!result){
+      return res
+        .status(405)
+        .json({ success: false, message: `credentials not matching` });
+    }
+    //correct userit is confimed
+    const saltRounds = 10;
+    const newHashedPassword =await bcrypt.hash(newPassword,saltRounds);
+    user.password = newHashedPassword;
+    await user.save();
+    
+    return res
+    .status(200)
+    .json({ success: true, message: `password changed successfully ` });
+
+  } catch (error) {
+    console.error(error);
+  }
+};
+module.exports = { RegisterController, LoginUser, changePasswordController };
